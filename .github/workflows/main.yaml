@@ -30,15 +30,21 @@ jobs:
         set -x
         echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN
         echo $ACTIONS_ID_TOKEN_REQUEST_URL
-        curl -v -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=smallstep" | jq .value -r > token
-        cat token | step crypto jwt inspect --insecure
+
+        # Save a token with aud=smallstep for small step auth
+        curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=smallstep" | jq .value -r > token
+        # Save token subject claim (we'll need it for the cert request) 
+        cat token | step crypto jwt inspect --insecure | jq .payload.sub -r > subject
+       
+        # Debug claims
+        # cat token | step crypto jwt inspect --insecure
     
     - name: Get small step cert
       run: |
         # Bootstrap client
         step ca bootstrap --ca-url $CA_URL --fingerprint $CA_FINGERPRINT
         
-        step ca certificate --token $(cat token) --provisioner GithubActions example.com example.crt example.key
+        step ca certificate --token $(cat token) --provisioner GithubActions $(cat subject) example.crt example.key
 
       env:
         CA_URL: "https://notfulcio.nfsmithca.ca.smallstep.com"
