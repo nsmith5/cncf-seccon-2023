@@ -30,7 +30,8 @@ jobs:
         set -x
         echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN
         echo $ACTIONS_ID_TOKEN_REQUEST_URL
-        curl -v -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=smallstep" | jq .value -r | step crypto jwt inspect --insecure
+        curl -v -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=smallstep" | jq .value -r > token
+        cat token | step crypto jwt inspect --insecure
     
     - name: Get small step cert
       run: |
