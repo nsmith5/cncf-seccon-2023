@@ -37,7 +37,7 @@ jobs:
         cat token | step crypto jwt inspect --insecure | jq .payload.sub -r > subject
        
         # Debug claims
-        # cat token | step crypto jwt inspect --insecure
+        cat token | step crypto jwt inspect --insecure
     
     - name: Get small step cert
       run: |

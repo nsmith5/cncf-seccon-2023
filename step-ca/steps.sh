@@ -10,7 +10,7 @@ step ca bootstrap --ca-url $tenant --fingerprint $fingerprint
 # Set up github actions provisioner
 step ca provisioner add GithubActions \
     --type oidc \
-    --client-id $tenant \ # Use tenant URL for audience in github actions
+    --client-id "smallstep" \ # Use tenant URL for audience in github actions
     --client-secret "" \  # Don't set a client-secret as we won't "login"
     --configuration-endpoint https://token.actions.githubusercontent.com/.well-known/openid-configuration
 

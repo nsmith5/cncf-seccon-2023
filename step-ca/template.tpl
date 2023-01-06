@@ -4,6 +4,6 @@
     "extKeyUsage": ["codeSigning"],
     "sans": [{
         "type": "uri",
-        "value": {{ toJson .Token.Sub }}
+        "value": {{ toJson .Token.sub }}
     }]
 }
