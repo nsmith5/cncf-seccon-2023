@@ -42,7 +42,7 @@ jobs:
     - name: Get small step cert
       run: |
         # Bootstrap client
-        step ca bootstrap --ca-url $CA_URL --fingerprint $CA_FINGERPRINT
+        step ca bootstrap --ca-url $CA_URL --fingerprint $CA_FINGERPRINT --install
         step ca root root.crt --ca-url $CA_URL --fingerprint $CA_FINGERPRINT
         
         step ca certificate --token $(cat token) --provisioner GithubActions $(cat subject) example.crt example.key
