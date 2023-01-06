@@ -46,6 +46,7 @@ jobs:
         
         step ca certificate --token $(cat token) --provisioner GithubActions $(cat subject) example.crt example.key
 
+        step certificate inspect example.crt
       env:
         CA_URL: "https://notfulcio.nfsmithca.ca.smallstep.com"
         CA_FINGERPRINT: "1a909073a65434c55ec0a53c6043aed4197c6760890fed63d1c3f265154d30b0"
