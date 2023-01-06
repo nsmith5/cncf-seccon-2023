@@ -31,6 +31,17 @@ jobs:
         echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN
         echo $ACTIONS_ID_TOKEN_REQUEST_URL
         curl -v -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=smallstep" | jq .value -r | step crypto jwt inspect --insecure
+    
+    - name: Get small step cert
+      run: |
+        # Bootstrap client
+        step ca bootstrap --ca-url $CA_URL --fingerprint $CA_FINGERPRINT
+        
+        step ca certificate --token $(cat token) --provisioner GithubActions example.com example.crt example.key
+
+      env:
+        CA_URL: "https://notfulcio.nfsmithca.ca.smallstep.com"
+        CA_FINGERPRINT: "1a909073a65434c55ec0a53c6043aed4197c6760890fed63d1c3f265154d30b0"
 
     - name: Install Cosign
       uses: sigstore/cosign-installer@main
