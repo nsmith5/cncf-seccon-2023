@@ -43,6 +43,7 @@ jobs:
       run: |
         # Bootstrap client
         step ca bootstrap --ca-url $CA_URL --fingerprint $CA_FINGERPRINT
+        step ca root root.crt --ca-url $CA_URL --fingerprint $CA_FINGERPRINT
         
         step ca certificate --token $(cat token) --provisioner GithubActions $(cat subject) example.crt example.key
 
@@ -53,3 +54,11 @@ jobs:
 
     - name: Install Cosign
       uses: sigstore/cosign-installer@main
+
+    - name: Sign a thing
+      run: |
+        docker pull hello-world
+        docker tag hello-world ttl.sh/hello:latest
+        docker push ttl.sh/hello:latest
+        
+        cosign sign --certificate example.crt --key example.key --certificate-chain root.crt ttl.sh/hello:latest
