@@ -56,9 +56,18 @@ jobs:
       uses: sigstore/cosign-installer@main
 
     - name: Sign a thing
+      env:
+        COSIGN_PASSWORD: foo
       run: |
         docker pull hello-world
         docker tag hello-world ttl.sh/hello:latest
         docker push ttl.sh/hello:latest
-        
-        cosign sign --certificate example.crt --key example.key --certificate-chain root.crt ttl.sh/hello:latest
+  
+        # cosign is picky about key format so lets change format
+        cosign import-key-pair --key example.key
+
+        rm example.key
+
+        cosign sign --certificate example.crt --key import-cosign.key --certificate-chain root.crt ttl.sh/hello:latest
+
+        rm import-cosign.key
