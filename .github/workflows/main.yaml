@@ -70,6 +70,8 @@ jobs:
 
         rm example.key
 
-        cosign sign --certificate example.crt --key import-cosign.key --certificate-chain root.crt ttl.sh/hello:latest
+        cat example.crt root.crt > bundle.crt
+
+        cosign sign --certificate example.crt --key import-cosign.key --certificate-chain bundle.crt ttl.sh/hello:latest
 
         rm import-cosign.key
