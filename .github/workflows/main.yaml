@@ -70,8 +70,15 @@ jobs:
 
         rm example.key
 
+        # The intermediate is in example.crt and root.crt is the root only so we need
+        # To do some stupid stuff to rearrange 
         cat example.crt root.crt > bundle.crt
+        cat bundle.crt | sed '0,/^-----END CERT/d' > read-bundle.crt
 
-        cosign sign --certificate example.crt --key import-cosign.key --certificate-chain bundle.crt ttl.sh/hello:latest
+        cosign sign --certificate example.crt --key import-cosign.key --certificate-chain real-bundle.crt ttl.sh/hello:latest
 
         rm import-cosign.key
+
+    - name: Verify a thing?
+      run: |
+        cosign verify --certificate example.crt --certificate-chain real-bundle.crt ttl.sh/hello:latest 
